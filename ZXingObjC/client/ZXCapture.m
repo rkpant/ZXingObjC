@@ -63,7 +63,6 @@
 
     _rotation = 0.0f;
     _running = NO;
-    _sessionPreset = AVCaptureSessionPresetMedium;
     _transform = CGAffineTransformIdentity;
     _scanRect = CGRectZero;
   }
@@ -77,13 +76,13 @@
   }
 
   if (_session && _session.inputs) {
-    for(AVCaptureInput *input in _session.inputs) {
+    for (AVCaptureInput *input in _session.inputs) {
       [_session removeInput:input];
     }
   }
 
   if (_session && _session.outputs) {
-    for(AVCaptureOutput *output in _session.outputs) {
+    for (AVCaptureOutput *output in _session.outputs) {
       [_session removeOutput:output];
     }
   }
@@ -284,8 +283,6 @@
   }
 
   if (self.session.running) {
-    [self.layer removeFromSuperlayer];
-
     [self.session stopRunning];
   }
 
@@ -329,6 +326,8 @@
 - (void)captureOutput:(AVCaptureOutput *)captureOutput
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection {
+  if (!self.running) return;
+
   @autoreleasepool {
     if (!self.cameraIsReady) {
       self.cameraIsReady = YES;
@@ -512,8 +511,17 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   }
 
   if (self.input) {
-    self.session.sessionPreset = self.sessionPreset;
     [self.session addInput:self.input];
+#if TARGET_OS_IPHONE
+    if ([_session canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
+      _sessionPreset = AVCaptureSessionPreset1920x1080;
+    } else {
+      _sessionPreset = AVCaptureSessionPreset1280x720;
+    }
+#else
+    _sessionPreset = AVCaptureSessionPreset1280x720;
+#endif
+    self.session.sessionPreset = self.sessionPreset;
   }
 
   [self.session commitConfiguration];
@@ -522,9 +530,17 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 - (AVCaptureSession *)session {
   if (!_session) {
     _session = [[AVCaptureSession alloc] init];
+#if TARGET_OS_IPHONE
+    if ([_session canSetSessionPreset:AVCaptureSessionPreset1920x1080]) {
+      _sessionPreset = AVCaptureSessionPreset1920x1080;
+    } else {
+      _sessionPreset = AVCaptureSessionPreset1280x720;
+    }
+#else
+      _sessionPreset = AVCaptureSessionPreset1280x720;
+#endif
     [self replaceInput];
   }
-
   return _session;
 }
 
