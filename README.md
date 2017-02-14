@@ -18,11 +18,15 @@ The following barcodes are currently supported for both encoding and decoding:
 * Aztec ('beta' quality)
 * PDF 417 ('alpha' quality)
 
+
 ZXingObjC currently has feature parity with ZXing version 3.0.
+ZXingObjC currently has feature parity with ZXing version 3.0
 
 ## Requirements
 
+## Requirements
 ZXingObjC requires Xcode 5, targeting either iOS 6.0 and above, or Mac OS X 10.8 Mountain Lion and above.
+## Requirements
 
 ## Usage
 
