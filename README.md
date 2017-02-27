@@ -110,3 +110,5 @@ ZXingObjC includes several example applications found in "examples" folder:
 ## License
 
 ZXingObjC is available under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html).
+
+Git Test
